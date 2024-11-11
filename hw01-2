@@ -1,0 +1,31 @@
+# client.py
+import socket
+
+# تنظیمات کلاینت
+SERVER_HOST = '127.0.0.1'  # آی‌پی سرور (اگر در یک شبکه محلی هستید، از آی‌پی شبکه استفاده کنید)
+SERVER_PORT = 12345         # شماره پورت سرور
+
+# ایجاد سوکت TCP و اتصال به سرور
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect((SERVER_HOST, SERVER_PORT))
+print("Connected to the server.")
+
+# ارسال و دریافت پیام‌ها
+try:
+    while True:
+        # ارسال پیام به سرور
+        message = input("You: ")
+        client_socket.send(message.encode())
+        if message.lower() == 'exit':
+            print("Chat ended.")
+            break
+       
+        # دریافت پاسخ از سرور
+        response = client_socket.recv(1024).decode()
+        print("Server:", response)
+        if response.lower() == 'exit':
+            print("Server ended the chat.")
+            break
+finally:
+    # بستن سوکت کلاینت
+    client_socket.close()
